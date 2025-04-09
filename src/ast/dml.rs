@@ -41,6 +41,7 @@ use super::{
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_insert"))]
 pub struct Insert {
     /// Only for Sqlite
     pub or: Option<SqliteOnConflict>,
@@ -183,6 +184,7 @@ impl Display for Insert {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_delete"))]
 pub struct Delete {
     /// Multi tables delete are supported in mysql
     pub tables: Vec<ObjectName>,

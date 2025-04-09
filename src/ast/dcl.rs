@@ -37,6 +37,7 @@ use crate::ast::{display_separated, ObjectName};
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_role_option"))]
 pub enum RoleOption {
     BypassRLS(bool),
     ConnectionLimit(Expr),
@@ -102,6 +103,7 @@ impl fmt::Display for RoleOption {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_set_config_value"))]
 pub enum SetConfigValue {
     Default,
     FromCurrent,
@@ -114,6 +116,7 @@ pub enum SetConfigValue {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_reset_config"))]
 pub enum ResetConfig {
     ALL,
     ConfigName(ObjectName),
@@ -123,6 +126,7 @@ pub enum ResetConfig {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_alter_role_operation"))]
 pub enum AlterRoleOperation {
     /// Generic
     RenameRole {
@@ -203,6 +207,7 @@ impl fmt::Display for AlterRoleOperation {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_use"))]
 pub enum Use {
     Catalog(ObjectName),            // e.g. `USE CATALOG foo.bar`
     Schema(ObjectName),             // e.g. `USE SCHEMA foo.bar`
@@ -237,6 +242,7 @@ impl fmt::Display for Use {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_secondary_roles"))]
 pub enum SecondaryRoles {
     All,
     None,

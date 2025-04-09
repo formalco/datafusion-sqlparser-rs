@@ -47,6 +47,7 @@ use crate::tokenizer::{Span, Token};
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_index_column"))]
 pub struct IndexColumn {
     pub column: OrderByExpr,
     pub operator_class: Option<Ident>,
@@ -89,6 +90,7 @@ impl fmt::Display for ReplicaIdentity {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_alter_table_operation"))]
 pub enum AlterTableOperation {
     /// `ADD <table_constraint> [NOT VALID]`
     AddConstraint {
@@ -393,6 +395,7 @@ pub enum AlterTableOperation {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_alter_policy_operation"))]
 pub enum AlterPolicyOperation {
     Rename {
         new_name: Ident,
@@ -436,6 +439,7 @@ impl fmt::Display for AlterPolicyOperation {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_alter_table_algorithm"))]
 pub enum AlterTableAlgorithm {
     Default,
     Instant,
@@ -460,6 +464,7 @@ impl fmt::Display for AlterTableAlgorithm {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_alter_table_lock"))]
 pub enum AlterTableLock {
     Default,
     None,
@@ -481,6 +486,7 @@ impl fmt::Display for AlterTableLock {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_owner"))]
 pub enum Owner {
     Ident(Ident),
     CurrentRole,
@@ -502,6 +508,7 @@ impl fmt::Display for Owner {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_alter_connector_owner"))]
 pub enum AlterConnectorOwner {
     User(Ident),
     Role(Ident),
@@ -519,6 +526,7 @@ impl fmt::Display for AlterConnectorOwner {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_alter_index_operation"))]
 pub enum AlterIndexOperation {
     RenameIndex { index_name: ObjectName },
 }
@@ -861,6 +869,7 @@ impl fmt::Display for AlterIndexOperation {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_alter_type"))]
 pub struct AlterType {
     pub name: ObjectName,
     pub operation: AlterTypeOperation,
@@ -870,6 +879,7 @@ pub struct AlterType {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_alter_type_operation"))]
 pub enum AlterTypeOperation {
     Rename(AlterTypeRename),
     AddValue(AlterTypeAddValue),
@@ -880,6 +890,7 @@ pub enum AlterTypeOperation {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_alter_type_rename"))]
 pub struct AlterTypeRename {
     pub new_name: Ident,
 }
@@ -888,6 +899,7 @@ pub struct AlterTypeRename {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_alter_type_add_value"))]
 pub struct AlterTypeAddValue {
     pub if_not_exists: bool,
     pub value: Ident,
@@ -898,6 +910,10 @@ pub struct AlterTypeAddValue {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(
+    feature = "visitor",
+    visit(with = "visit_alter_type_add_value_position")
+)]
 pub enum AlterTypeAddValuePosition {
     Before(Ident),
     After(Ident),
@@ -907,6 +923,7 @@ pub enum AlterTypeAddValuePosition {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_alter_type_rename_value"))]
 pub struct AlterTypeRenameValue {
     pub from: Ident,
     pub to: Ident,
@@ -950,6 +967,7 @@ impl fmt::Display for AlterTypeOperation {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_alter_column_operation"))]
 pub enum AlterColumnOperation {
     /// `SET NOT NULL`
     SetNotNull,
@@ -1033,6 +1051,7 @@ impl fmt::Display for AlterColumnOperation {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_table_constraint"))]
 pub enum TableConstraint {
     /// MySQL [definition][1] for `UNIQUE` constraints statements:\
     /// * `[CONSTRAINT [<name>]] UNIQUE <index_type_display> [<index_name>] [index_type] (<columns>) <index_options>`
@@ -1323,6 +1342,7 @@ impl fmt::Display for TableConstraint {
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_key_or_index_display"))]
 pub enum KeyOrIndexDisplay {
     /// Nothing to display
     None,
@@ -1371,6 +1391,7 @@ impl fmt::Display for KeyOrIndexDisplay {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_index_type"))]
 pub enum IndexType {
     BTree,
     Hash,
@@ -1407,6 +1428,7 @@ impl fmt::Display for IndexType {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_index_option"))]
 pub enum IndexOption {
     /// `USING { BTREE | HASH }`: Index type to use for the index.
     ///
@@ -1431,6 +1453,7 @@ impl fmt::Display for IndexOption {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_nulls_distinct_option"))]
 pub enum NullsDistinctOption {
     /// Not specified
     None,
@@ -1453,6 +1476,7 @@ impl fmt::Display for NullsDistinctOption {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_procedure_param"))]
 pub struct ProcedureParam {
     pub name: Ident,
     pub data_type: DataType,
@@ -1473,6 +1497,7 @@ impl fmt::Display for ProcedureParam {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_column_def"))]
 pub struct ColumnDef {
     pub name: Ident,
     pub data_type: DataType,
@@ -1512,6 +1537,7 @@ impl fmt::Display for ColumnDef {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_view_column_def"))]
 pub struct ViewColumnDef {
     pub name: Ident,
     pub data_type: Option<DataType>,
@@ -1574,6 +1600,7 @@ impl fmt::Display for ViewColumnDef {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_column_option_def"))]
 pub struct ColumnOptionDef {
     pub name: Option<Ident>,
     pub option: ColumnOption,
@@ -1595,6 +1622,7 @@ impl fmt::Display for ColumnOptionDef {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_identity_property_kind"))]
 pub enum IdentityPropertyKind {
     /// An identity property declared via the `AUTOINCREMENT` key word
     /// Example:
@@ -1639,6 +1667,7 @@ impl fmt::Display for IdentityPropertyKind {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_identity_property"))]
 pub struct IdentityProperty {
     pub parameters: Option<IdentityPropertyFormatKind>,
     pub order: Option<IdentityPropertyOrder>,
@@ -1661,6 +1690,10 @@ pub struct IdentityProperty {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(
+    feature = "visitor",
+    visit(with = "visit_identity_property_format_kind")
+)]
 pub enum IdentityPropertyFormatKind {
     /// A parameters of identity column declared like parameters of function call
     /// Example:
@@ -1698,6 +1731,7 @@ impl fmt::Display for IdentityPropertyFormatKind {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_identity_parameters"))]
 pub struct IdentityParameters {
     pub seed: Expr,
     pub increment: Expr,
@@ -1712,6 +1746,7 @@ pub struct IdentityParameters {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_identity_property_order"))]
 pub enum IdentityPropertyOrder {
     Order,
     NoOrder,
@@ -1736,6 +1771,7 @@ impl fmt::Display for IdentityPropertyOrder {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_column_policy"))]
 pub enum ColumnPolicy {
     MaskingPolicy(ColumnPolicyProperty),
     ProjectionPolicy(ColumnPolicyProperty),
@@ -1761,6 +1797,7 @@ impl fmt::Display for ColumnPolicy {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_column_policy_property"))]
 pub struct ColumnPolicyProperty {
     /// This flag indicates that the column policy option is declared using the `WITH` prefix.
     /// Example
@@ -1782,6 +1819,7 @@ pub struct ColumnPolicyProperty {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_tags_column_option"))]
 pub struct TagsColumnOption {
     /// This flag indicates that the tags option is declared using the `WITH` prefix.
     /// Example:
@@ -1808,6 +1846,7 @@ impl fmt::Display for TagsColumnOption {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_column_option"))]
 pub enum ColumnOption {
     /// `NULL`
     Null,
@@ -2037,6 +2076,7 @@ impl fmt::Display for ColumnOption {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_generated_as"))]
 pub enum GeneratedAs {
     Always,
     ByDefault,
@@ -2048,6 +2088,7 @@ pub enum GeneratedAs {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_generated_expression_mode"))]
 pub enum GeneratedExpressionMode {
     Virtual,
     Stored,
@@ -2103,6 +2144,7 @@ fn display_option_spaced<T: fmt::Display>(option: &Option<T>) -> impl fmt::Displ
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Default, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_constraint_characteristics"))]
 pub struct ConstraintCharacteristics {
     /// `[ DEFERRABLE | NOT DEFERRABLE ]`
     pub deferrable: Option<bool>,
@@ -2115,6 +2157,7 @@ pub struct ConstraintCharacteristics {
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_deferrable_initial"))]
 pub enum DeferrableInitial {
     /// `INITIALLY IMMEDIATE`
     Immediate,
@@ -2182,6 +2225,7 @@ impl fmt::Display for ConstraintCharacteristics {
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_referential_action"))]
 pub enum ReferentialAction {
     Restrict,
     Cascade,
@@ -2208,6 +2252,7 @@ impl fmt::Display for ReferentialAction {
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_drop_behavior"))]
 pub enum DropBehavior {
     Restrict,
     Cascade,
@@ -2226,6 +2271,10 @@ impl fmt::Display for DropBehavior {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(
+    feature = "visitor",
+    visit(with = "visit_user_defined_type_representation")
+)]
 pub enum UserDefinedTypeRepresentation {
     Composite {
         attributes: Vec<UserDefinedTypeCompositeAttributeDef>,
@@ -2251,6 +2300,10 @@ impl fmt::Display for UserDefinedTypeRepresentation {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(
+    feature = "visitor",
+    visit(with = "visit_user_defined_type_composite_attribute_def")
+)]
 pub struct UserDefinedTypeCompositeAttributeDef {
     pub name: Ident,
     pub data_type: DataType,
@@ -2273,6 +2326,7 @@ impl fmt::Display for UserDefinedTypeCompositeAttributeDef {
 #[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_partition"))]
 pub enum Partition {
     Identifier(Ident),
     Expr(Expr),
@@ -2300,6 +2354,7 @@ impl fmt::Display for Partition {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_deduplicate"))]
 pub enum Deduplicate {
     All,
     ByExpression(Expr),
@@ -2321,6 +2376,7 @@ impl fmt::Display for Deduplicate {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_clustered_by"))]
 pub struct ClusteredBy {
     pub columns: Vec<Ident>,
     pub sorted_by: Option<Vec<OrderByExpr>>,
@@ -2345,6 +2401,7 @@ impl fmt::Display for ClusteredBy {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_create_index"))]
 pub struct CreateIndex {
     /// index name
     pub name: Option<ObjectName>,
@@ -2425,6 +2482,7 @@ impl fmt::Display for CreateIndex {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_create_table"))]
 pub struct CreateTable {
     pub or_replace: bool,
     pub temporary: bool,
@@ -2888,6 +2946,7 @@ impl fmt::Display for CreateDomain {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_create_function"))]
 pub struct CreateFunction {
     /// True if this is a `CREATE OR ALTER FUNCTION` statement
     ///
@@ -3034,6 +3093,7 @@ impl fmt::Display for CreateFunction {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_create_connector"))]
 pub struct CreateConnector {
     pub name: Ident,
     pub if_not_exists: bool,

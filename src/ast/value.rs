@@ -67,6 +67,7 @@ use sqlparser_derive::{Visit, VisitMut};
 #[derive(Debug, Clone, Eq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_value_with_span"))]
 pub struct ValueWithSpan {
     pub value: Value,
     pub span: Span,
@@ -261,6 +262,7 @@ impl fmt::Display for Value {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_dollar_quoted_string"))]
 pub struct DollarQuotedString {
     pub value: String,
     pub tag: Option<String>,
@@ -282,6 +284,7 @@ impl fmt::Display for DollarQuotedString {
 #[derive(Debug, Clone, PartialEq, Eq, Ord, PartialOrd, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_date_time_field"))]
 pub enum DateTimeField {
     Year,
     Years,
@@ -575,6 +578,7 @@ pub fn escape_unicode_string(s: &str) -> EscapeUnicodeStringLiteral<'_> {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_trim_where_field"))]
 pub enum TrimWhereField {
     Both,
     Leading,

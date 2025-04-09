@@ -34,6 +34,7 @@ use sqlparser_derive::{Visit, VisitMut};
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_stage_params_object"))]
 pub struct StageParamsObject {
     pub url: Option<String>,
     pub encryption: KeyValueOptions,
@@ -64,6 +65,7 @@ impl fmt::Display for StageLoadSelectItemKind {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_stage_load_select_item"))]
 pub struct StageLoadSelectItem {
     pub alias: Option<Ident>,
     pub file_col_num: i32,
@@ -116,6 +118,7 @@ impl fmt::Display for StageLoadSelectItem {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_file_staging_command"))]
 pub struct FileStagingCommand {
     #[cfg_attr(feature = "visitor", visit(with = "visit_relation"))]
     pub stage: ObjectName,
