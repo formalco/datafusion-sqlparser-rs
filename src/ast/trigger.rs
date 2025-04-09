@@ -22,6 +22,7 @@ use super::*;
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_trigger_object"))]
 pub enum TriggerObject {
     Row,
     Statement,
@@ -40,6 +41,7 @@ impl fmt::Display for TriggerObject {
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_trigger_referencing_type"))]
 pub enum TriggerReferencingType {
     OldTable,
     NewTable,
@@ -58,6 +60,7 @@ impl fmt::Display for TriggerReferencingType {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_trigger_referencing"))]
 pub struct TriggerReferencing {
     pub refer_type: TriggerReferencingType,
     pub is_as: bool,
@@ -80,6 +83,7 @@ impl fmt::Display for TriggerReferencing {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_trigger_event"))]
 pub enum TriggerEvent {
     Insert,
     Update(Vec<Ident>),
@@ -109,6 +113,7 @@ impl fmt::Display for TriggerEvent {
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_trigger_period"))]
 pub enum TriggerPeriod {
     After,
     Before,
@@ -129,6 +134,7 @@ impl fmt::Display for TriggerPeriod {
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_trigger_exec_body_type"))]
 pub enum TriggerExecBodyType {
     Function,
     Procedure,
@@ -146,6 +152,7 @@ impl fmt::Display for TriggerExecBodyType {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_trigger_exec_body"))]
 pub struct TriggerExecBody {
     pub exec_type: TriggerExecBodyType,
     pub func_desc: FunctionDesc,

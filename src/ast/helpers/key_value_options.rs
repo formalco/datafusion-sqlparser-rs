@@ -34,6 +34,7 @@ use sqlparser_derive::{Visit, VisitMut};
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_key_value_options"))]
 pub struct KeyValueOptions {
     pub options: Vec<KeyValueOption>,
 }
@@ -41,6 +42,7 @@ pub struct KeyValueOptions {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_key_value_option_type"))]
 pub enum KeyValueOptionType {
     STRING,
     BOOLEAN,
@@ -51,6 +53,7 @@ pub enum KeyValueOptionType {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_key_value_option"))]
 pub struct KeyValueOption {
     pub option_name: String,
     pub option_type: KeyValueOptionType,

@@ -44,6 +44,7 @@ use super::{
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_index_column"))]
 pub struct IndexColumn {
     pub column: OrderByExpr,
     pub operator_class: Option<Ident>,
@@ -63,6 +64,7 @@ impl Display for IndexColumn {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_create_index"))]
 pub struct CreateIndex {
     /// index name
     pub name: Option<ObjectName>,
@@ -129,6 +131,7 @@ impl Display for CreateIndex {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_create_table"))]
 pub struct CreateTable {
     pub or_replace: bool,
     pub temporary: bool,
@@ -525,6 +528,7 @@ impl Display for CreateTable {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_insert"))]
 pub struct Insert {
     /// Only for Sqlite
     pub or: Option<SqliteOnConflict>,
@@ -661,6 +665,7 @@ impl Display for Insert {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_delete"))]
 pub struct Delete {
     /// Multi tables delete are supported in mysql
     pub tables: Vec<ObjectName>,

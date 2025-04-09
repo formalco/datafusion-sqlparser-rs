@@ -32,6 +32,7 @@ use super::{value::escape_single_quote_string, ColumnDef};
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_enum_member"))]
 pub enum EnumMember {
     Name(String),
     /// ClickHouse allows to specify an integer value for each enum value.
@@ -44,6 +45,7 @@ pub enum EnumMember {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_data_type"))]
 pub enum DataType {
     /// Table type in [PostgreSQL], e.g. CREATE FUNCTION RETURNS TABLE(...).
     ///
@@ -804,6 +806,7 @@ fn format_clickhouse_datetime_precision_and_timezone(
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_struct_bracket_kind"))]
 pub enum StructBracketKind {
     /// Example: `STRUCT(a INT, b STRING)`
     Parentheses,
@@ -818,6 +821,7 @@ pub enum StructBracketKind {
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_timezone_info"))]
 pub enum TimezoneInfo {
     /// No information about time zone, e.g. TIMESTAMP
     None,
@@ -866,6 +870,7 @@ impl fmt::Display for TimezoneInfo {
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_exact_number_info"))]
 pub enum ExactNumberInfo {
     /// No additional information, e.g. `DECIMAL`
     None,
@@ -897,6 +902,7 @@ impl fmt::Display for ExactNumberInfo {
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_character_length"))]
 pub enum CharacterLength {
     IntegerLength {
         /// Default (if VARYING) or maximum (if not VARYING) length
@@ -931,6 +937,7 @@ impl fmt::Display for CharacterLength {
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_char_length_units"))]
 pub enum CharLengthUnits {
     /// CHARACTERS unit
     Characters,
@@ -954,6 +961,7 @@ impl fmt::Display for CharLengthUnits {
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_binary_length"))]
 pub enum BinaryLength {
     IntegerLength {
         /// Default (if VARYING)
@@ -984,6 +992,7 @@ impl fmt::Display for BinaryLength {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_array_elem_type_def"))]
 pub enum ArrayElemTypeDef {
     /// `ARRAY`
     None,
@@ -1002,6 +1011,7 @@ pub enum ArrayElemTypeDef {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_geometric_type_kind"))]
 pub enum GeometricTypeKind {
     Point,
     Line,

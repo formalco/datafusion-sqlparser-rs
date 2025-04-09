@@ -62,6 +62,7 @@ use crate::parser::ParserError;
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_create_table_builder"))]
 pub struct CreateTableBuilder {
     pub or_replace: bool,
     pub temporary: bool,
