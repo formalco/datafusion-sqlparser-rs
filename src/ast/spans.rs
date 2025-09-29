@@ -21,7 +21,7 @@ use crate::ast::{
 };
 use core::iter;
 
-use crate::tokenizer::Span;
+use crate::tokenizer::{Span};
 
 use super::{
     dcl::SecondaryRoles, value::ValueWithSpan, AccessExpr, AlterColumnOperation,
@@ -2635,5 +2635,37 @@ ALTER TABLE users
 
         assert_eq!(stmt_span.start, (2, 13).into());
         assert_eq!(stmt_span.end, (4, 11).into());
+    }
+
+    #[test]
+    fn test_function_span() {
+        let sql = "SELECT database(), left(user(),instr(concat(user(),'@'),'@')-1);";
+        let r = Parser::parse_sql(&crate::dialect::MySqlDialect {}, sql).unwrap();
+
+        let query = match &r[0] {
+            crate::ast::Statement::Query(q) => q,
+            _ => panic!("Expected query"),
+        };
+
+        let select = match query.body.as_ref() {
+            crate::ast::SetExpr::Select(s) => s,
+            _ => panic!("Expected select"),
+        };
+
+        let database_func = match &select.projection[0] {
+            crate::ast::SelectItem::UnnamedExpr(crate::ast::Expr::Function(func)) => func,
+            _ => panic!("Expected function expression"),
+        };
+        let span = database_func.span();
+        assert_eq!(span.start, (1, 8).into());
+        assert_eq!(span.end, (1, 17).into());
+
+        let left_func = match &select.projection[1] {
+            crate::ast::SelectItem::UnnamedExpr(crate::ast::Expr::Function(func)) => func,
+            _ => panic!("Expected function expression"),
+        };
+        let span = left_func.span();
+        assert_eq!(span.start, (1, 20).into());
+        assert_eq!(span.end, (1, 63).into());
     }
 }

@@ -2183,6 +2183,8 @@ impl<'a> Parser<'a> {
             None
         };
 
+        self.expect_token(&Token::RParen)?;
+
         Ok(Function {
             name,
             uses_odbc_syntax: false,
@@ -15781,7 +15783,7 @@ impl<'a> Parser<'a> {
             ));
         }
 
-        if self.consume_token(&Token::RParen) {
+        if self.peek_token() == Token::RParen {
             return Ok(FunctionArgumentList {
                 duplicate_treatment: None,
                 args: vec![],
@@ -15841,8 +15843,6 @@ impl<'a> Parser<'a> {
                 json_returning_clause,
             ));
         }
-
-        self.expect_token(&Token::RParen)?;
         Ok(FunctionArgumentList {
             duplicate_treatment,
             args,
