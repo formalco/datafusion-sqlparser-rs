@@ -41,6 +41,7 @@ use super::{
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_insert"))]
 pub struct Insert {
     /// Token for the `INSERT` keyword (or its substitutes)
     pub insert_token: AttachedToken,
@@ -279,6 +280,7 @@ impl Display for Insert {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_delete"))]
 pub struct Delete {
     /// Token for the `DELETE` keyword
     pub delete_token: AttachedToken,
@@ -510,6 +512,7 @@ impl Display for Merge {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_merge_clause"))]
 pub struct MergeClause {
     /// The `WHEN` token that starts the sub-expression.
     pub when_token: AttachedToken,
@@ -549,6 +552,7 @@ impl Display for MergeClause {
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_merge_clause_kind"))]
 pub enum MergeClauseKind {
     /// `WHEN MATCHED`
     Matched,
@@ -588,6 +592,7 @@ impl Display for MergeClauseKind {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_merge_action"))]
 pub enum MergeAction {
     /// An `INSERT` clause
     ///
@@ -633,6 +638,7 @@ impl Display for MergeAction {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_merge_insert_kind"))]
 pub enum MergeInsertKind {
     /// The insert expression is defined from an explicit `VALUES` clause
     ///
@@ -678,6 +684,7 @@ impl Display for MergeInsertKind {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_merge_insert_expr"))]
 pub struct MergeInsertExpr {
     /// The `INSERT` token that starts the sub-expression.
     pub insert_token: AttachedToken,
@@ -755,6 +762,7 @@ impl Display for MergeUpdateExpr {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_output_clause"))]
 pub enum OutputClause {
     /// `OUTPUT` clause
     Output {

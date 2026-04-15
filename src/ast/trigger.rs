@@ -22,6 +22,7 @@ use super::*;
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_trigger_object"))]
 pub enum TriggerObject {
     /// The trigger fires once for each row affected by the triggering event
     Row,
@@ -41,6 +42,7 @@ impl fmt::Display for TriggerObject {
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_trigger_referencing_type"))]
 /// This clause indicates whether the following relation name is for the before-image transition relation or the after-image transition relation
 pub enum TriggerReferencingType {
     /// The transition relation containing the old rows affected by the triggering statement
@@ -62,6 +64,7 @@ impl fmt::Display for TriggerReferencingType {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_trigger_referencing"))]
 pub struct TriggerReferencing {
     /// The referencing type (`OLD TABLE` or `NEW TABLE`).
     pub refer_type: TriggerReferencingType,
@@ -87,6 +90,7 @@ impl fmt::Display for TriggerReferencing {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_trigger_event"))]
 pub enum TriggerEvent {
     /// Trigger on INSERT event
     Insert,
@@ -120,6 +124,7 @@ impl fmt::Display for TriggerEvent {
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_trigger_period"))]
 pub enum TriggerPeriod {
     /// The trigger fires once for each row affected by the triggering event
     For,
@@ -146,6 +151,7 @@ impl fmt::Display for TriggerPeriod {
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_trigger_exec_body_type"))]
 pub enum TriggerExecBodyType {
     /// Execute a function
     Function,
@@ -165,6 +171,7 @@ impl fmt::Display for TriggerExecBodyType {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_trigger_exec_body"))]
 pub struct TriggerExecBody {
     /// Whether the body is a `FUNCTION` or `PROCEDURE` invocation.
     pub exec_type: TriggerExecBodyType,

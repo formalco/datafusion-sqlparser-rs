@@ -34,6 +34,7 @@ use sqlparser_derive::{Visit, VisitMut};
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_stage_params_object"))]
 /// Parameters for a named stage object used in data loading/unloading.
 pub struct StageParamsObject {
     /// Optional URL for the stage.
@@ -72,6 +73,7 @@ impl fmt::Display for StageLoadSelectItemKind {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_stage_load_select_item"))]
 /// A single item in the `SELECT` list for data loading from staged files.
 pub struct StageLoadSelectItem {
     /// Optional alias for the input source.
@@ -129,6 +131,7 @@ impl fmt::Display for StageLoadSelectItem {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_file_staging_command"))]
 /// A command to stage files to a named stage.
 pub struct FileStagingCommand {
     /// The stage to which files are being staged.

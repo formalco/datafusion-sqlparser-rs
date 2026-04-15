@@ -34,6 +34,7 @@ use crate::ast::{display_comma_separated, display_separated, ValueWithSpan};
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_key_value_options"))]
 /// A collection of key-value options.
 pub struct KeyValueOptions {
     /// The list of key-value options.
@@ -56,6 +57,7 @@ pub enum KeyValueOptionsDelimiter {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_key_value_option"))]
 /// A single key-value option.
 pub struct KeyValueOption {
     /// The name of the option.
@@ -72,6 +74,7 @@ pub struct KeyValueOption {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_key_value_option_kind"))]
 /// The kind of value for a key-value option.
 pub enum KeyValueOptionKind {
     /// A single value.
