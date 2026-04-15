@@ -5172,7 +5172,20 @@ impl<'a> Parser<'a> {
         } else if self.parse_keyword(Keyword::SECRET) {
             self.parse_create_secret(or_replace, temporary, persistent)
         } else if self.parse_keyword(Keyword::USER) {
-            self.parse_create_user(or_replace).map(Into::into)
+            if dialect_of!(self is PostgreSqlDialect) {
+                // PostgreSQL: `CREATE USER` is an alias of `CREATE ROLE` with
+                // `LOGIN` defaulting to true.
+                self.parse_create_role()
+                    .map(|mut role| {
+                        if role.login.is_none() {
+                            role.login = Some(true);
+                        }
+                        role
+                    })
+                    .map(Into::into)
+            } else {
+                self.parse_create_user(or_replace).map(Into::into)
+            }
         } else if or_replace {
             self.expected_ref(
                 "[EXTERNAL] TABLE or [MATERIALIZED] VIEW or FUNCTION after CREATE OR REPLACE",
@@ -10767,7 +10780,14 @@ impl<'a> Parser<'a> {
             Keyword::ROLE => self.parse_alter_role(),
             Keyword::POLICY => self.parse_alter_policy().map(Into::into),
             Keyword::CONNECTOR => self.parse_alter_connector(),
-            Keyword::USER => self.parse_alter_user().map(Into::into),
+            Keyword::USER => {
+                if dialect_of!(self is PostgreSqlDialect) {
+                    // PostgreSQL: `ALTER USER` is an alias of `ALTER ROLE`.
+                    self.parse_alter_role()
+                } else {
+                    self.parse_alter_user().map(Into::into)
+                }
+            }
             // unreachable because expect_one_of_keywords used above
             unexpected_keyword => Err(ParserError::ParserError(
                 format!("Internal parser error: expected any of {{VIEW, TYPE, COLLATION, TABLE, INDEX, FUNCTION, AGGREGATE, ROLE, POLICY, CONNECTOR, ICEBERG, SCHEMA, USER, OPERATOR}}, got {unexpected_keyword:?}"),
