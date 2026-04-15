@@ -296,6 +296,7 @@ impl fmt::Display for Value {
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_dollar_quoted_string"))]
 pub struct DollarQuotedString {
     /// Inner string contents.
     pub value: String,
@@ -346,6 +347,7 @@ impl fmt::Display for QuoteDelimitedString {
 #[derive(Debug, Clone, PartialEq, Eq, Ord, PartialOrd, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_date_time_field"))]
 pub enum DateTimeField {
     /// `YEAR`
     Year,
@@ -689,6 +691,7 @@ pub fn escape_unicode_string(s: &str) -> EscapeUnicodeStringLiteral<'_> {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "visitor", derive(Visit, VisitMut))]
+#[cfg_attr(feature = "visitor", visit(with = "visit_trim_where_field"))]
 pub enum TrimWhereField {
     /// `BOTH` (trim from both ends)
     Both,
